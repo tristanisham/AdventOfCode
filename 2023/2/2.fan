@@ -2,11 +2,11 @@
 import "std/fs" for Fs
 // import "std/os" for Runtime
 
-var game1Limits = {
-    "red": 12,
-    "green": 13,
-    "blue": 14
-}
+// Game limits:
+//    "red": 12,
+//    "green": 13,
+//    "blue": 14
+
 
 class Game {
     construct new(id) {
