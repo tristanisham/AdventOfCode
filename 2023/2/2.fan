@@ -1,5 +1,6 @@
 // This one isn't finished yet.
 import "std/fs" for Fs
+import "std/fmt" for Color
 // import "std/os" for Runtime
 
 // Game limits:
@@ -14,19 +15,46 @@ class Game {
         _red = 0
         _blue = 0
         _green = 0
+
+        _rounds = []
     }
 
-    red=(value) {_red = _red + value}
-    green=(value) {_green = _green + value}
-    blue=(value) {_blue = _blue + value}
+    toConsoleString() {
+        return "%(Color.red())%(_red)%(Color.reset()) %(Color.green())%(_green)%(Color.reset()) %(Color.blue())%(_blue)%(Color.reset())"
+    }
+
+    red=(value) {_red = value}
+    green=(value) {_green = value}
+    blue=(value) {_blue =  value}
 
     id {_id}
     red { _red }
     green { _green }
     blue { _blue }
+    rounds {_rounds}
+
+    addRound(red, green, blue) {
+        // System.print("%(red) %(green) %(blue)")
+        var output = _rounds.add({"red": red, "green": green, "blue": blue})
+        // System.print("Saved %(output)")
+    }
 
     isGame1Valid() {
-       return !(_red > 12 || _green > 13 || _blue > 14)
+        for (round in _rounds) {
+            // System.print("%(this.rounds)")
+            var result = true
+
+            if (round["red"] > 12) {
+                result = false
+            } else if (round["green"] > 13) {
+                result = false
+            } else if (round["blue"] > 14) {
+                result = false
+            }
+
+            return result
+        }
+
     }
 }
 
@@ -67,22 +95,28 @@ for (line in input.split("\n")) {
     var game = Game.new(Num.fromString(gameId))
     var size = segments.count
     var i = 0
+    var input = {"red": 0, "green": 0, "blue": 0}
     while (i < size) {
         if (i % 2 != 0) {
             if (segments[i] == "red") {
-                game.red = Num.fromString(segments[i-1])
+                input["red"] = Num.fromString(segments[i-1])
             } else if (segments[i] == "green") {
-                game.green = Num.fromString(segments[i-1])
+                input["green"] = Num.fromString(segments[i-1])
             } else if (segments[i] == "blue") {
-                game.blue = Num.fromString(segments[i-1])
+                input["blue"] = Num.fromString(segments[i-1])
             }
+        }
+
+        if ( i != 0 && i % 6 == 0) {
+            // System.print("%(i). %(input)")
+            game.addRound(input["red"], input["green"], input["blue"])
         }
 
         i = i + 1
     }
 
     if (game.isGame1Valid()) {
-        System.print(game.id)
+        // System.print("%(Color.green())Valid:%(Color.reset()) %(game.id)")
         games.add(game)
     }
 
@@ -95,3 +129,4 @@ for (game in games) {
 }
 
 System.print(final)
+
